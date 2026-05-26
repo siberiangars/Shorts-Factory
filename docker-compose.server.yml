@@ -1,0 +1,148 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: shorts
+      POSTGRES_PASSWORD: shorts
+      POSTGRES_DB: shorts
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shorts"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - internal
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: /app/.venv/bin/uvicorn api.main:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+psycopg://shorts:shorts@postgres:5432/shorts
+      - REDIS_URL=redis://redis:6379/0
+      - STORAGE_PATH=/app/storage
+      - NEXT_PUBLIC_API_URL=https://shorts.v3techbots.online
+      - STORAGE_BASE_URL=https://shorts.v3techbots.online
+      - YOUTUBE_OAUTH_REDIRECT_URI=https://shorts.v3techbots.online/api/channels/oauth-callback
+      - INSTAGRAM_OAUTH_REDIRECT_URI=https://shorts.v3techbots.online/api/instagram/oauth-callback
+    volumes:
+      - ./storage:/app/storage
+      - ./secrets:/app/secrets:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+      - web
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: /app/.venv/bin/celery -A workers.celery_app worker -Q pipeline,scheduler --loglevel=info --concurrency=2
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+psycopg://shorts:shorts@postgres:5432/shorts
+      - REDIS_URL=redis://redis:6379/0
+      - STORAGE_PATH=/app/storage
+      - NEXT_PUBLIC_API_URL=https://shorts.v3techbots.online
+      - STORAGE_BASE_URL=https://shorts.v3techbots.online
+      - YOUTUBE_OAUTH_REDIRECT_URI=https://shorts.v3techbots.online/api/channels/oauth-callback
+      - INSTAGRAM_OAUTH_REDIRECT_URI=https://shorts.v3techbots.online/api/instagram/oauth-callback
+    volumes:
+      - ./storage:/app/storage
+      - ./secrets:/app/secrets:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: /app/.venv/bin/celery -A workers.celery_app beat --loglevel=info --scheduler celery.beat:PersistentScheduler
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql+psycopg://shorts:shorts@postgres:5432/shorts
+      - REDIS_URL=redis://redis:6379/0
+      - STORAGE_PATH=/app/storage
+    volumes:
+      - beat_data:/app/celerybeat-schedule
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://shorts.v3techbots.online
+    env_file: .env
+    environment:
+      - NEXT_PUBLIC_API_URL=https://shorts.v3techbots.online
+      - NEXTAUTH_URL=https://shorts.v3techbots.online
+      - API_INTERNAL_URL=http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - api
+    networks:
+      - web
+
+volumes:
+  postgres_data:
+  beat_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  internal:
+    driver: bridge
+  web:
+    driver: bridge
