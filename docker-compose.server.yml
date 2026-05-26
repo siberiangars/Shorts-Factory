@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: shorts
       POSTGRES_PASSWORD: shorts
@@ -17,6 +18,7 @@ services:
 
   redis:
     image: redis:7-alpine
+    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -30,6 +32,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command: /app/.venv/bin/uvicorn api.main:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
     env_file: .env
     environment:
       - DATABASE_URL=postgresql+psycopg://shorts:shorts@postgres:5432/shorts
@@ -61,6 +64,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command: /app/.venv/bin/celery -A workers.celery_app worker -Q pipeline,scheduler --loglevel=info --concurrency=2
+    restart: unless-stopped
     env_file: .env
     environment:
       - DATABASE_URL=postgresql+psycopg://shorts:shorts@postgres:5432/shorts
@@ -85,14 +89,15 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: /app/.venv/bin/celery -A workers.celery_app beat --loglevel=info --scheduler celery.beat:PersistentScheduler
+    command: /app/.venv/bin/celery -A workers.celery_app beat --loglevel=info --scheduler celery.beat:PersistentScheduler --schedule /app/celerybeat/celerybeat-schedule
+    restart: unless-stopped
     env_file: .env
     environment:
       - DATABASE_URL=postgresql+psycopg://shorts:shorts@postgres:5432/shorts
       - REDIS_URL=redis://redis:6379/0
       - STORAGE_PATH=/app/storage
     volumes:
-      - beat_data:/app/celerybeat-schedule
+      - beat_data:/app/celerybeat
     depends_on:
       postgres:
         condition: service_healthy
@@ -108,6 +113,7 @@ services:
       args:
         NEXT_PUBLIC_API_URL: https://shorts.v3techbots.online
     env_file: .env
+    restart: unless-stopped
     environment:
       - NEXT_PUBLIC_API_URL=https://shorts.v3techbots.online
       - NEXTAUTH_URL=https://shorts.v3techbots.online
