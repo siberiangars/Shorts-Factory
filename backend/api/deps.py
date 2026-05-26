@@ -12,6 +12,8 @@ _bearer = HTTPBearer(auto_error=False)
 
 # Origins allowed to call the API without a Bearer token (browser requests)
 _TRUSTED_ORIGINS = {
+    "http://shorts.v3techbots.online",
+    "https://shorts.v3techbots.online",
     "http://185.252.215.53:3000",
     "http://185.252.215.53",
     "http://localhost:3000",

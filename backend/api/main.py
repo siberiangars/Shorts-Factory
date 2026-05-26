@@ -67,6 +67,8 @@ def create_app() -> FastAPI:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
+            "http://shorts.v3techbots.online",
+            "https://shorts.v3techbots.online",
             "http://185.252.215.53:3000",
             "http://185.252.215.53",
             "http://localhost:3000",
