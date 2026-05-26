@@ -1,0 +1,161 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: shorts
+      POSTGRES_PASSWORD: shorts
+      POSTGRES_DB: shorts
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shorts"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - internal
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - internal
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: /app/.venv/bin/uvicorn api.main:app --host 0.0.0.0 --port 8000
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - FERNET_KEY=${FERNET_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+      - HEYGEN_API_KEY=${HEYGEN_API_KEY}
+      - PIXABAY_API_KEY=${PIXABAY_API_KEY:-placeholder-add-later}
+      - GROQ_API_KEY=${GROQ_API_KEY:-placeholder-add-later}
+      - FAL_API_KEY=${FAL_API_KEY:-placeholder-add-later}
+      - YOUTUBE_CLIENT_SECRETS_FILE=${YOUTUBE_CLIENT_SECRETS_FILE}
+      - YOUTUBE_OAUTH_REDIRECT_URI=${YOUTUBE_OAUTH_REDIRECT_URI}
+      - STORAGE_PATH=${STORAGE_PATH}
+      - API_AUTH_TOKEN=${API_AUTH_TOKEN}
+      - DAILY_UPLOAD_QUOTA_PER_PROJECT=${DAILY_UPLOAD_QUOTA_PER_PROJECT:-6}
+      - DEFAULT_VIDEO_FPS=${DEFAULT_VIDEO_FPS:-30}
+      - DEFAULT_VIDEO_RESOLUTION=${DEFAULT_VIDEO_RESOLUTION:-1080x1920}
+      - ALLOWED_EMAILS=${ALLOWED_EMAILS:-}
+    volumes:
+      - ./storage:/app/storage
+      - ./secrets:/app/secrets:ro
+      # NOTE: no ./backend:/app mount — would shadow .venv built into image
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+      - external
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: /app/.venv/bin/celery -A workers.celery_app worker -Q pipeline,scheduler --loglevel=info --concurrency=2
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - FERNET_KEY=${FERNET_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - PEXELS_API_KEY=${PEXELS_API_KEY}
+      - HEYGEN_API_KEY=${HEYGEN_API_KEY}
+      - PIXABAY_API_KEY=${PIXABAY_API_KEY:-placeholder-add-later}
+      - GROQ_API_KEY=${GROQ_API_KEY:-placeholder-add-later}
+      - YOUTUBE_CLIENT_SECRETS_FILE=${YOUTUBE_CLIENT_SECRETS_FILE}
+      - STORAGE_PATH=${STORAGE_PATH}
+      - DAILY_UPLOAD_QUOTA_PER_PROJECT=${DAILY_UPLOAD_QUOTA_PER_PROJECT:-6}
+      - DEFAULT_VIDEO_FPS=${DEFAULT_VIDEO_FPS:-30}
+      - DEFAULT_VIDEO_RESOLUTION=${DEFAULT_VIDEO_RESOLUTION:-1080x1920}
+    volumes:
+      - ./storage:/app/storage
+      - ./secrets:/app/secrets:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: /app/.venv/bin/celery -A workers.celery_app beat --loglevel=info --scheduler celery.beat:PersistentScheduler
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - FERNET_KEY=${FERNET_KEY}
+      - STORAGE_PATH=${STORAGE_PATH}
+    volumes:
+      - beat_data:/app/celerybeat-schedule
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      # NextAuth — runtime переменные (не попадают в образ, читаются при старте)
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_BOT_USERNAME=${TELEGRAM_BOT_USERNAME:-}
+      - ALLOWED_EMAILS=${ALLOWED_EMAILS:-}
+      - ALLOWED_TELEGRAM_IDS=${ALLOWED_TELEGRAM_IDS:-}
+      # Нужен для server-side запросов к бэкенду (проверка лицензий)
+      - API_AUTH_TOKEN=${API_AUTH_TOKEN}
+      - API_INTERNAL_URL=http://api:8000
+      # Публичный список admin-emails (для UI — показывать панель лицензий)
+      - NEXT_PUBLIC_ADMIN_EMAILS=${ALLOWED_EMAILS:-}
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - external
+
+volumes:
+  postgres_data:
+  beat_data:
+
+networks:
+  internal:
+    driver: bridge
+  external:
+    driver: bridge

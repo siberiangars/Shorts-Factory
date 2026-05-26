@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ── Dark design system ── */
+    --background:   240 5% 4%;      /* #0a0a0b */
+    --foreground:   60 5% 98%;      /* #fafaf7 */
+    --card:         240 6% 8%;      /* #141417 */
+    --card-foreground: 60 5% 98%;
+    --popover:      240 6% 8%;
+    --popover-foreground: 60 5% 98%;
+    --primary:      43 100% 70%;    /* #ffd166 gold */
+    --primary-foreground: 240 5% 4%; /* dark text on gold */
+    --secondary:    240 5% 8%;      /* #131316 */
+    --secondary-foreground: 60 5% 98%;
+    --muted:        240 5% 8%;      /* #131316 */
+    --muted-foreground: 60 4% 55%;  /* subdued text */
+    --accent:       240 5% 12%;
+    --accent-foreground: 60 5% 98%;
+    --destructive:  0 72% 51%;
+    --destructive-foreground: 60 5% 98%;
+    --border:       240 5% 16%;     /* rgba(255,255,255,0.12) equiv */
+    --input:        240 5% 12%;
+    --ring:         43 100% 70%;    /* gold focus ring */
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-unbounded), 'Unbounded', system-ui, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ── Custom utilities ── */
+.font-display {
+  font-family: var(--font-unbounded), 'Unbounded', system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+.font-mono-label {
+  font-family: var(--font-mono), 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.section-label {
+  @apply font-mono-label text-muted-foreground mb-5 flex items-center gap-1.5;
+}
+.section-label::before {
+  content: '/';
+  color: hsl(var(--primary));
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(240 5% 25%); }
+
+/* ── Gold glow effect ── */
+.gold-glow {
+  box-shadow: 0 0 24px rgba(255, 209, 102, 0.15);
+}

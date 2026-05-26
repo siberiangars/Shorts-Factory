@@ -1,0 +1,46 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Secrets & credentials
+secrets/
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!next.config.json
+
+# Storage (generated videos)
+storage/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.uv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Alembic
+celerybeat-schedule
+celerybeat.pid
+
+# Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shorts Factory — Инструкция</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0a0b;--ink2:#131316;--card:#141417;
+  --hair:rgba(255,255,255,0.12);--hair2:rgba(255,255,255,0.06);
+  --paper:#fafaf7;--muted:rgba(250,250,247,0.45);
+  --gold:#ffd166;--gold-glow:rgba(255,209,102,0.15);
+  --green:#4ade80;--red:#f87171;--violet:#a78bfa;--r:0.75rem;
+}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--paper);font-family:'Manrope',system-ui,sans-serif;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Unbounded',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:-0.02em}
+h1{font-size:clamp(38px,6vw,72px);line-height:.95}
+h2{font-size:clamp(24px,3.5vw,44px);line-height:1.05}
+h3{font-size:clamp(14px,1.8vw,18px);line-height:1.2}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+section{padding:88px 0}
+section+section{border-top:1px solid var(--hair)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,11,.75);backdrop-filter:blur(20px);border-bottom:1px solid var(--hair)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:58px;max-width:1100px;margin:0 auto;padding:0 24px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-badge{width:30px;height:30px;border-radius:8px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--ink)}
+.logo-txt{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--paper)}
+.nav-links{display:flex;align-items:center;gap:4px;list-style:none}
+.nav-links a{font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:9999px;transition:all .15s}
+.nav-links a:hover{color:var(--paper);background:var(--hair2)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:9999px;padding:13px 22px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .18s}
+.btn-gold{background:var(--gold);color:var(--ink)}.btn-gold:hover{background:#ffe08a;transform:translateY(-1px)}
+.btn-outline{background:var(--ink2);color:var(--paper);border:1px solid var(--hair)}.btn-outline:hover{border-color:rgba(255,255,255,.25);background:#1a1a1f}
+.hero{padding-top:150px;padding-bottom:88px;position:relative;overflow:hidden}
+.glow{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.g1{width:600px;height:600px;background:var(--gold-glow);top:-60px;right:-80px}
+.g2{width:350px;height:350px;background:rgba(255,209,102,.07);bottom:0;left:-60px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--ink2);border:1px solid var(--hair);border-radius:9999px;padding:7px 14px;margin-bottom:28px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero-sub{font-size:17px;color:var(--muted);max-width:500px;line-height:1.7;margin:22px 0 38px}
+.hero-acts{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:60px}
+.stats{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.stat-num{font-family:'Unbounded',sans-serif;font-size:26px;font-weight:700}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.divider{width:1px;height:36px;background:var(--hair)}
+.card{background:var(--card);border:1px solid var(--hair);border-radius:var(--r);padding:26px}
+.card-icon{width:44px;height:44px;background:var(--ink2);border:1px solid var(--hair);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.card-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:8px}
+.card-txt{font-size:13px;color:var(--muted);line-height:1.65}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.slabel{display:inline-flex;align-items:center;gap:6px;margin-bottom:18px;color:var(--muted)}
+.slabel::before{content:'/';color:var(--gold)}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:52px 1fr;gap:0 22px;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;left:25px;top:42px;bottom:-10px;width:1px;background:var(--hair)}
+.step-left{display:flex;flex-direction:column;align-items:center;padding-top:4px}
+.step-num{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;background:var(--gold);color:var(--ink);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-body{background:var(--card);border:1px solid var(--hair);border-radius:var(--r);padding:26px;margin-bottom:20px}
+.step-title{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.step-txt{font-size:13px;color:var(--muted);line-height:1.7}
+.step-txt p+p{margin-top:10px}
+.step-txt ul{margin-top:12px;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+.step-txt li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--muted)}
+.step-txt li::before{content:'—';color:var(--gold);flex-shrink:0;margin-top:1px}
+.step-txt li strong{color:var(--paper)}
+.code{background:var(--ink2);border:1px solid var(--hair);border-radius:10px;padding:14px 18px;margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;overflow-x:auto}
+.code .c{color:var(--gold)}.code .v{color:#88d4ab}.code .k{color:#c792ea}
+.hl{background:rgba(255,209,102,.07);border:1px solid rgba(255,209,102,.2);border-radius:var(--r);padding:18px 22px;display:flex;align-items:flex-start;gap:12px;margin-top:14px}
+.hl .ic{font-size:18px;flex-shrink:0;margin-top:2px}
+.hl p{font-size:13px;color:var(--muted);line-height:1.65}
+.hl strong{color:var(--gold)}
+.warn{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:var(--r);padding:14px 18px;display:flex;gap:10px;margin-top:12px}
+.warn p{font-size:12px;color:rgba(252,165,165,.9);line-height:1.65}
+.pill{display:inline-flex;align-items:center;gap:5px;background:var(--ink2);border:1px solid var(--hair);border-radius:9999px;padding:4px 11px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.pill-gold{background:rgba(255,209,102,.1);border-color:rgba(255,209,102,.25);color:var(--gold)}
+.pill-green{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.2);color:var(--green)}
+.mode{background:var(--card);border:1px solid var(--hair);border-radius:var(--r);padding:26px;transition:border-color .2s}
+.mode:hover{border-color:rgba(255,209,102,.3)}
+.mode-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.mode-em{font-size:26px}
+.mode-title{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase}
+.mode-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.mode-feat{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:14px}
+.mode-feat li{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.mode-feat li::before{content:'→';color:var(--gold);font-size:11px}
+.api-row{display:flex;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--hair2)}
+.api-row:last-child{border-bottom:none}
+.api-label{width:160px;font-size:13px;color:var(--muted);flex-shrink:0}
+.api-code{flex:1;background:var(--ink2);border:1px solid var(--hair);border-radius:8px;padding:6px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--paper)}
+details{background:var(--card);border:1px solid var(--hair);border-radius:var(--r);margin-bottom:8px;overflow:hidden;transition:border-color .2s}
+details:hover{border-color:rgba(255,255,255,.2)}
+details summary{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;cursor:pointer;font-weight:600;font-size:14px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary::after{content:'+';color:var(--gold);font-size:18px;line-height:1;flex-shrink:0;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+.faq-a{padding:0 22px 18px;font-size:13px;color:var(--muted);line-height:1.7}
+.pipe{display:flex;align-items:center;overflow-x:auto;gap:0;padding-bottom:6px;margin-top:20px}
+.ps{flex-shrink:0;background:var(--card);border:1px solid var(--hair);border-radius:9px;padding:12px 14px;text-align:center;min-width:88px}
+.ps-ic{font-size:18px;margin-bottom:5px}
+.ps-nm{font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted)}
+.pa{flex-shrink:0;color:var(--gold);font-size:16px;padding:0 4px}
+footer{border-top:1px solid var(--hair);padding:44px 0}
+.foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.foot-txt{font-size:12px;color:var(--muted)}
+.foot-link{color:var(--gold);text-decoration:none}.foot-link:hover{text-decoration:underline}
+@media(max-width:768px){.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo"><div class="logo-badge">SF</div><span class="logo-txt">Shorts Factory</span></a>
+    <ul class="nav-links">
+      <li><a href="#steps">Инструкция</a></li>
+      <li><a href="#modes">Режимы</a></li>
+      <li><a href="#youtube">YouTube</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="http://shorts.v3techbots.online" class="btn btn-gold" target="_blank" style="padding:8px 16px;font-size:11px">Открыть сервис ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="glow g1"></div><div class="glow g2"></div>
+    <div class="badge"><div class="badge-dot"></div><span class="mono">Сервис работает · v1.0</span></div>
+    <h1>Shorts Factory<br><span style="color:var(--gold)">Инструкция</span><br>для клиентов</h1>
+    <p class="hero-sub">Тема → скрипт → голос → видео → YouTube + Instagram. Без монтажа, без редактора, без команды.</p>
+    <div class="hero-acts">
+      <a href="http://shorts.v3techbots.online" class="btn btn-gold" target="_blank">→ Открыть сервис</a>
+      <a href="#steps" class="btn btn-outline">Читать инструкцию</a>
+    </div>
+    <div class="stats">
+      <div><div class="stat-num">~5 мин</div><div class="stat-lbl">от темы до видео</div></div>
+      <div class="divider"></div>
+      <div><div class="stat-num">6/день</div><div class="stat-lbl">квота YouTube</div></div>
+      <div class="divider"></div>
+      <div><div class="stat-num">2 режима</div><div class="stat-lbl">B-roll или HeyGen</div></div>
+      <div class="divider"></div>
+      <div><div class="stat-num">9:16</div><div class="stat-lbl">Shorts/Reels</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="slabel mono">Что нужно</p>
+    <h2 style="margin-bottom:44px">Три вещи<br>чтобы начать</h2>
+    <div class="grid3">
+      <div class="card"><div class="card-icon">🔑</div><div class="card-title">API-ключи</div><div class="card-txt">Anthropic, ElevenLabs, Pexels, HeyGen — уже настроены на сервере. Новые ключи добавляются через .env.</div></div>
+      <div class="card"><div class="card-icon">📺</div><div class="card-title">YouTube-канал</div><div class="card-txt">Google Cloud + OAuth. После авторизации сервис публикует автоматически без участия человека.</div></div>
+      <div class="card"><div class="card-icon">⏱</div><div class="card-title">5 минут</div><div class="card-txt">Создать канал → добавить тему → нажать ▶. Всё остальное сервис сделает сам: скрипт, голос, видеоряд, монтаж, публикация.</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="steps">
+  <div class="wrap">
+    <p class="slabel mono">Инструкция</p>
+    <h2 style="margin-bottom:44px">Пошаговый<br>запуск</h2>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">01</div></div>
+        <div class="step-body">
+          <div class="step-title">Открываем сервис <span class="pill pill-green">Работает</span></div>
+          <div class="step-txt">
+            <div class="code"><span class="c">Сервис:</span>  <a href="http://shorts.v3techbots.online" style="color:var(--green)">http://shorts.v3techbots.online</a><br><span class="c">API docs:</span> <span class="v">http://shorts.v3techbots.online/docs</span><br><span class="c">Инструкция:</span> <span class="v">http://shorts.v3techbots.online/guide</span></div>
+            <div class="hl"><span class="ic">💡</span><p>Авторизация через браузер не нужна — сервис работает без логина. Прямые API-вызовы требуют Bearer-токен.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">02</div></div>
+        <div class="step-body">
+          <div class="step-title">Создаём канал</div>
+          <div class="step-txt">
+            <p>Канал — набор настроек: режим генерации, голос, промпт, теги по умолчанию.</p>
+            <ul>
+              <li>Перейти на <strong>/channels</strong> → нажать <strong>«+ Создать канал»</strong></li>
+              <li>Выбрать режим: <strong>B-roll + Голос</strong> или <strong>HeyGen Аватар</strong></li>
+              <li>Для канала о здоровье — нажать <strong>«👴 Дедушка Врач»</strong>, всё заполнится автоматически</li>
+              <li>Нажать <strong>«Создать»</strong></li>
+            </ul>
+            <div class="hl"><span class="ic">⭐</span><p>Один сервис = несколько каналов на разные ниши. Каждый со своим голосом, промптом и YouTube-аккаунтом.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" id="youtube">
+        <div class="step-left"><div class="step-num">03</div></div>
+        <div class="step-body">
+          <div class="step-title">Подключаем YouTube <span class="pill pill-green">Готово к подключению</span></div>
+          <div class="step-txt">
+            <p>На карточке созданного канала нажать <strong>«Подключить YouTube»</strong>.</p>
+            <ul>
+              <li>Создать проект в <strong>Google Cloud Console</strong> → включить <strong>YouTube Data API v3</strong></li>
+              <li>Создать <strong>OAuth 2.0 Client ID</strong> (тип: Web Application)</li>
+              <li>В Authorized redirect URIs добавить:<br><code style="color:var(--gold);font-family:monospace;font-size:11px">http://shorts.v3techbots.online/api/channels/oauth-callback</code></li>
+              <li>Добавить свой Google email как <strong>Test User</strong> (OAuth consent screen → Test users)</li>
+              <li>Скачать <code>client_secret.json</code> → загрузить на сервер в <code>/root/shorts-factory/secrets/</code></li>
+              <li>Нажать <strong>«Подключить YouTube»</strong> → пройти авторизацию Google</li>
+            </ul>
+            <div class="hl"><span class="ic">✅</span><p>После авторизации статус YouTube на карточке канала станет <strong>зелёным</strong>. Квота: 6 видео в день на один Google Cloud проект.</p></div>
+            <div class="warn"><p>⚠️ При ошибке «приложение не верифицировано» — нажать «Дополнительно» → «Перейти на shorts-factory». Это нормально для тестового режима.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">04</div></div>
+        <div class="step-body">
+          <div class="step-title">Добавляем темы</div>
+          <div class="step-txt">
+            <p>Тема = одно видео. Два способа добавить:</p>
+            <ul>
+              <li><strong>Вручную:</strong> /topics → «+ Добавить» → вписать тему и выбрать канал</li>
+              <li><strong>Через AI:</strong> нажать <strong>«✨ AI-генерация»</strong> → выбрать канал → Claude создаст 20 тем по нише → отредактировать → «Сохранить»</li>
+              <li>Можно указать <strong>дату запуска</strong> — планировщик сработает автоматически</li>
+            </ul>
+            <div class="hl"><span class="ic">🤖</span><p>AI-генерация выдаёт <strong>20 уникальных тем</strong> за раз. Рекомендую сразу заполнить очередь на 2–3 недели вперёд.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">05</div></div>
+        <div class="step-body">
+          <div class="step-title">Запускаем генерацию <span class="pill pill-gold">Главное</span></div>
+          <div class="step-txt">
+            <p>Нажать <strong>▶</strong> рядом с темой — немедленный запуск. Или указать дату — автозапуск по расписанию.</p>
+            <div style="margin-top:18px"><p class="mono" style="color:var(--muted);margin-bottom:10px">Этапы пайплайна:</p>
+              <div class="pipe">
+                <div class="ps"><div class="ps-ic">✍️</div><div class="ps-nm">Скрипт</div></div><div class="pa">→</div>
+                <div class="ps"><div class="ps-ic">🎙️</div><div class="ps-nm">Голос</div></div><div class="pa">→</div>
+                <div class="ps"><div class="ps-ic">🎬</div><div class="ps-nm">B-roll</div></div><div class="pa">→</div>
+                <div class="ps"><div class="ps-ic">💬</div><div class="ps-nm">Субтитры</div></div><div class="pa">→</div>
+                <div class="ps"><div class="ps-ic">🎞️</div><div class="ps-nm">Монтаж</div></div><div class="pa">→</div>
+                <div class="ps"><div class="ps-ic">📤</div><div class="ps-nm">YouTube</div></div>
+              </div>
+            </div>
+            <p style="margin-top:14px">Следить за прогрессом на <strong>/videos</strong>. Нажать на видео → детальный лог каждого шага с временем и стоимостью.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">06</div></div>
+        <div class="step-body">
+          <div class="step-title">Публикуем</div>
+          <div class="step-txt">
+            <p>По умолчанию видео загружаются как <strong>Unlisted</strong> (доступно по ссылке, не в поиске).</p>
+            <ul>
+              <li>Открыть видео на <strong>/videos/[id]</strong> → нажать <strong>«Опубликовать»</strong> → станет публичным на YouTube</li>
+              <li>Нажать <strong>«Instagram»</strong> → опубликуется как Reel</li>
+              <li>Или включить <strong>Авто-публикацию</strong> в настройках канала — всё происходит само</li>
+              <li>Если видео упало с ошибкой — нажать <strong>«Повторить»</strong>, пайплайн продолжит с того места</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="modes">
+  <div class="wrap">
+    <p class="slabel mono">Режимы генерации</p>
+    <h2 style="margin-bottom:44px">B-roll или<br>HeyGen аватар</h2>
+    <div class="grid2">
+      <div class="mode">
+        <div class="mode-head"><span class="mode-em">🎬</span><div><div class="mode-title">B-roll + Голос</div><div class="mode-sub">Классический</div></div><span class="pill pill-green" style="margin-left:auto">Дефолт</span></div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.65">Скрипт озвучивается голосом ElevenLabs, на фон подбираются видеоклипы с Pexels, субтитры накладываются автоматически.</p>
+        <ul class="mode-feat"><li>Голос: ElevenLabs (150+ голосов)</li><li>Фон: Pexels B-roll по ключевым словам</li><li>Субтитры: автотранскрипция</li><li>Стоимость: ~$0.01–0.05 за видео</li><li>Время: 3–7 минут</li></ul>
+        <div class="code"><span class="c">Нужно:</span> <span class="v">ELEVENLABS_API_KEY + PEXELS_API_KEY</span></div>
+      </div>
+      <div class="mode" style="border-color:rgba(255,209,102,.2)">
+        <div class="mode-head"><span class="mode-em">👤</span><div><div class="mode-title">HeyGen Аватар</div><div class="mode-sub">Talking head</div></div><span class="pill pill-gold" style="margin-left:auto">Premium</span></div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.65">HeyGen генерирует видео с говорящим AI-аватаром. Зритель видит лицо — доверие выше.</p>
+        <ul class="mode-feat"><li>Аватар: кастомный Photo Avatar или из библиотеки</li><li>Голос: встроенные голоса HeyGen</li><li>Субтитры: транскрипция видео с аватаром</li><li>Время: 5–12 минут</li></ul>
+        <div class="code"><span class="c">Нужно:</span> <span class="v">HEYGEN_API_KEY + Avatar ID + Voice ID</span></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px;border-color:rgba(255,209,102,.2);background:rgba(255,209,102,.03)">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px">
+        <span style="font-size:36px">👴</span>
+        <div><h3 style="font-size:14px;margin-bottom:4px">Пресет «Дедушка Врач»</h3><div class="mono" style="color:var(--muted)">Готовый персонаж для health-канала</div></div>
+        <span class="pill pill-gold" style="margin-left:auto">Рекомендуем</span>
+      </div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px">Александр Михайлович — врач-геронтолог 72 лет с 45-летним стажем. Тёплый, авторитетный стиль. Идеален для канала о здоровье, долголетии, биохакинге.</p>
+      <div class="grid3" style="gap:10px">
+        <div style="background:var(--ink2);border:1px solid var(--hair);border-radius:9px;padding:12px"><div class="mono" style="margin-bottom:5px">Ниша</div><div style="font-size:12px;color:var(--paper)">здоровье, медицина, долголетие</div></div>
+        <div style="background:var(--ink2);border:1px solid var(--hair);border-radius:9px;padding:12px"><div class="mono" style="margin-bottom:5px">Язык</div><div style="font-size:12px;color:var(--paper)">Русский (ru)</div></div>
+        <div style="background:var(--ink2);border:1px solid var(--hair);border-radius:9px;padding:12px"><div class="mono" style="margin-bottom:5px">Режим</div><div style="font-size:12px;color:var(--gold)">HeyGen Аватар</div></div>
+      </div>
+      <div class="hl" style="margin-top:12px"><span class="ic">🎯</span><p>Нажми <strong>«👴 Дедушка Врач»</strong> при создании канала — промпт, теги, описание персонажа заполнятся автоматически. Вставь <strong>Avatar ID</strong> и <strong>Voice ID</strong> из HeyGen.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="slabel mono">Конфигурация</p>
+    <h2 style="margin-bottom:44px">API-ключи</h2>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="border-bottom:1px solid var(--hair);padding:20px 24px"><div class="mono" style="color:var(--muted);margin-bottom:6px">Хранятся на сервере</div><p style="font-size:13px;color:var(--muted)">Только в <code style="color:var(--gold);font-family:monospace">/root/shorts-factory/.env</code> — не попадают во фронтенд и git.</p></div>
+      <div class="api-row"><span class="api-label">Anthropic Claude</span><code class="api-code">ANTHROPIC_API_KEY</code><span class="pill pill-green">Настроен</span></div>
+      <div class="api-row"><span class="api-label">ElevenLabs TTS</span><code class="api-code">ELEVENLABS_API_KEY</code><span class="pill pill-green">Настроен</span></div>
+      <div class="api-row"><span class="api-label">Pexels B-roll</span><code class="api-code">PEXELS_API_KEY</code><span class="pill pill-green">Настроен</span></div>
+      <div class="api-row"><span class="api-label">HeyGen Avatar</span><code class="api-code">HEYGEN_API_KEY</code><span class="pill pill-green">Настроен</span></div>
+      <div class="api-row"><span class="api-label">Meta / Instagram</span><code class="api-code">META_APP_ID + META_APP_SECRET</code><span class="pill">Опционально</span></div>
+    </div>
+    <div class="hl" style="margin-top:14px"><span class="ic">⚙️</span><p>Добавить ключ: <code style="color:var(--gold);font-family:monospace">ssh root@185.252.215.53 → nano /root/shorts-factory/.env → docker compose restart api worker beat</code></p></div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <p class="slabel mono">FAQ</p>
+    <h2 style="margin-bottom:44px">Частые<br>вопросы</h2>
+    <div style="max-width:700px">
+      <details><summary>Сколько стоит одно видео?</summary><div class="faq-a">B-roll режим: ~$0.003–0.05 (скрипт + голос; Pexels бесплатно). HeyGen режим: зависит от тарифа HeyGen, от $0.08 до $0.50. Точная стоимость видна в логе шагов на странице видео.</div></details>
+      <details><summary>Почему видео загружается как Unlisted, а не Public?</summary><div class="faq-a">Защита от случайных публикаций. Сначала посмотри результат — потом нажми «Опубликовать». Или включи авто-публикацию (auto_publish_public) в настройках канала — тогда всё идёт сразу в public.</div></details>
+      <details><summary>Видео упало с ошибкой — что делать?</summary><div class="faq-a">Открой /videos/[id], прочти текст ошибки в логе. Нажми «Повторить» — пайплайн продолжит с того шага, где остановился. Готовые артефакты (скрипт, голос, b-roll) не пересоздаются.</div></details>
+      <details><summary>Можно больше 6 видео в день?</summary><div class="faq-a">Да — нужно несколько Google Cloud проектов (каждый даёт 10 000 units/день = 6 загрузок). В поле google_cloud_project_id канала укажи нужный проект, соответствующий client_secret.json положи в secrets/.</div></details>
+      <details><summary>Как настроить аватар «Дедушка Врач» в HeyGen?</summary><div class="faq-a">1. Зарегистрируйся на heygen.com → получи API ключ. 2. Создай Photo Avatar — загрузи фото пожилого доктора. 3. Выбери русский голос. 4. Скопируй Avatar ID и Voice ID. 5. В настройках канала выбери режим HeyGen и вставь эти ID — или нажми пресет «👴 Дедушка Врач».</div></details>
+      <details><summary>Как подключить Instagram?</summary><div class="faq-a">Нужен Instagram Professional аккаунт + Facebook App с правами instagram_content_publish. Добавь META_APP_ID и META_APP_SECRET в .env → перезапусти API → на карточке канала появится «Подключить Instagram».</div></details>
+      <details><summary>Где смотреть статистику?</summary><div class="faq-a">/dashboard: KPI (в очереди, опубликовано сегодня, всего, средняя стоимость) + график за 30 дней. Детальный лог — /videos/[id] → «Лог генерации».</div></details>
+      <details><summary>Как удалить канал или тему?</summary><div class="faq-a">Каналы: кнопка 🗑 в правом верхнем углу карточки. Темы: кнопка 🗑 в строке таблицы. Удаление безвозвратное — подтверждение спросит перед удалением.</div></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <div class="logo-badge">SF</div>
+          <span class="logo-txt">Shorts Factory</span>
+        </div>
+        <div class="foot-txt">Автоматизированная фабрика YouTube Shorts</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+        <a href="http://shorts.v3techbots.online" class="btn btn-gold" target="_blank" style="padding:10px 18px;font-size:11px">Открыть сервис →</a>
+        <div class="foot-txt"><a href="http://shorts.v3techbots.online/docs" class="foot-link" target="_blank">API Docs</a> · v1.0 · 2025</div>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
