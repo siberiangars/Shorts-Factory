@@ -1,0 +1,23 @@
+services:
+  api:
+    environment:
+      - NEXT_PUBLIC_API_URL=https://shorts.v3techbots.online
+      - YOUTUBE_OAUTH_REDIRECT_URI=https://shorts.v3techbots.online/api/channels/oauth-callback
+      - STORAGE_BASE_URL=https://shorts.v3techbots.online
+      - INSTAGRAM_OAUTH_REDIRECT_URI=https://shorts.v3techbots.online/api/instagram/oauth-callback
+
+  worker:
+    environment:
+      - NEXT_PUBLIC_API_URL=https://shorts.v3techbots.online
+      - YOUTUBE_OAUTH_REDIRECT_URI=https://shorts.v3techbots.online/api/channels/oauth-callback
+      - STORAGE_BASE_URL=https://shorts.v3techbots.online
+      - INSTAGRAM_OAUTH_REDIRECT_URI=https://shorts.v3techbots.online/api/instagram/oauth-callback
+
+  frontend:
+    build:
+      args:
+        NEXT_PUBLIC_API_URL: https://shorts.v3techbots.online
+    environment:
+      - NEXT_PUBLIC_API_URL=https://shorts.v3techbots.online
+      - NEXTAUTH_URL=https://shorts.v3techbots.online
+      - API_INTERNAL_URL=http://api:8000
